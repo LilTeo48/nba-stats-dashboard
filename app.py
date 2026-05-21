@@ -1,6 +1,40 @@
 import streamlit as st
 import pandas as pd
 
+team_logos = {
+    "Miami Heat": "assets/logos/heat.png",
+    "Boston Celtics": "assets/logos/celtics.png",
+    "Golden State Warriors": "assets/logos/warriors.png",
+    "Los Angeles Lakers": "assets/logos/lakers.png",
+    "Denver Nuggets": "assets/logos/nuggets.png",
+    "Chicago Bulls": "assets/logos/bulls.png",
+    "New York Knicks": "assets/logos/knicks.png",
+    "Dallas Mavericks": "assets/logos/mavericks.png",
+    "Phoenix Suns": "assets/logos/suns.png",
+    "Milwaukee Bucks": "assets/logos/bucks.png",
+    "Atlanta Hawks": "assets/logos/hawks.png",
+    "Brooklyn Nets": "assets/logos/nets.png",
+    "Charlotte Hornets": "assets/logos/hornets.png",
+    "Cleveland Cavaliers": "assets/logos/cavaliers.png",
+    "Detroit Pistons": "assets/logos/pistons.png",
+    "Houston Rockets": "assets/logos/rockets.png",
+    "Indiana Pacers": "assets/logos/pacers.png",
+    "Los Angeles Clippers": "assets/logos/clippers.png",
+    "Memphis Grizzlies": "assets/logos/grizzlies.png",
+    "Minnesota Timberwolves": "assets/logos/timberwolves.png",
+    "New Orleans Pelicans": "assets/logos/pelicans.png",
+    "Oklahoma City Thunder": "assets/logos/thunder.png",
+    "Orlando Magic": "assets/logos/magic.png",
+    "Philadelphia 76ers": "assets/logos/sixers.png",
+    "Portland Trail Blazers": "assets/logos/blazers.png",
+    "Sacramento Kings": "assets/logos/kings.png",
+    "San Antonio Spurs": "assets/logos/spurs.png",
+    "Toronto Raptors": "assets/logos/raptors.png",
+    "Utah Jazz": "assets/logos/jazz.png",
+    "Washington Wizards": "assets/logos/wizards.png",
+}
+
+
 st.set_page_config(page_title="NBA Stats Dashboard", layout="wide")
 
 st.title("NBA Stats Dashboard")
@@ -77,6 +111,9 @@ selected_team = st.selectbox("Select a team", df["Team"])
 team_data = df[df["Team"] == selected_team].iloc[0]
 
 st.subheader(f"{selected_team} Summary")
+
+if selected_team in team_logos:
+    st.image(team_logos[selected_team], width=150)
 
 col1, col2, col3, col4 = st.columns(4)
 
