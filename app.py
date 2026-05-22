@@ -111,16 +111,84 @@ data = {
 
 historical_data = {
     "Season": ["2021-22", "2022-23", "2023-24", "2024-25"],
+    "Atlanta Hawks": [43, 41, 36, 36],
     "Boston Celtics": [51, 57, 64, 61],
-    "Miami Heat": [53, 44, 46, 37], 
+    "Brooklyn Nets": [44, 45, 32, 26], 
+    "Charlotte Hornets": [43, 27, 21, 19],
+    "Chicago Bulls": [46, 40, 39, 39], 
+    "Cleveland Cavaliers": [44, 51, 48, 64],
+    "Dallas Mavericks": [52, 38, 50, 39],
     "Denver Nuggets": [48, 53, 57, 50], 
-    "Los Angeles Lakers": [33, 43, 47, 50], 
+    "Detroit Pistons": [23, 17, 14, 44],
     "Golden State Warriors": [53, 44, 46, 48],
+    "Houston Rockets": [20, 22, 41, 52],
+    "Indiana Pacers": [25, 35, 47, 50],
+    "Los Angeles Clippers": [42, 44, 51, 50],
+    "Los Angeles Lakers": [33, 43, 47, 50], 
+    "Memphis Grizzlies": [56, 51, 27, 48], 
+    "Miami Heat": [53, 44, 46, 37], 
+    "Milwaukee Bucks": [51, 58, 49, 48],
+    "Minnesota Timberwolves": [46, 42, 56, 49],
+    "New Orleans Pelicans": [36, 42, 49, 21],
+    "New York Knicks": [37, 47, 50, 51],
+    "Oklahoma City Thunder": [24, 40, 57, 68],
+    "Orlando Magic": [22, 34, 47, 41],
+    "Philadelphia 76ers": [51, 54, 47, 24],
+    "Phoenix Suns": [64, 45, 49, 36],
+    "Portland Trail Blazers": [27, 33, 21, 36],
+    "Sacramento Kings": [30, 48, 46, 40],
+    "San Antonio Spurs": [34, 22, 22, 34],
+    "Toronto Raptors": [48, 41, 25, 30],
+    "Utah Jazz": [49, 37, 31, 17],
+    "Washington Wizards": [35, 35, 15, 18],
+    
 
 }
 historical_df = pd.DataFrame(historical_data)
 
+team_conferences = {
+"Atlanta Hawks" : "Eastern",
+"Boston Celtics": "Eastern", 
+"Brooklyn Nets": "Eastern", 
+"Charlotte Hornets": "Eastern", 
+"Chicago Bulls": "Eastern", 
+"Cleveland Cavaliers": "Eastern", 
+"Detroit Pistons": "Eastern", 
+"Indiana Pacers": "Eastern", 
+"Miami Heat": "Eastern", 
+"Milwaukee Bucks": "Eastern", 
+"New York Knicks": "Eastern", 
+"Orlando Magic": "Eastern", 
+"Philadelphia 76ers": "Eastern", 
+"Toronto Raptors": "Eastern", 
+"Washington Wizards": "Eastern", 
+
+
+"Dallas Mavericks": "Western", 
+"Denver Nuggets": "Western", 
+"Golden State Warriors": "Western", 
+"Houston Rockets": "Western", 
+"Los Angeles Clippers": "Western", 
+"Los Angeles Lakers": "Western", 
+"Memphis Grizzlies": "Western", 
+"Minnesota Timberwolves": "Western", 
+"New Orleans Pelicans": "Western", 
+"Oklahoma City Thunder": "Western", 
+"Phoenix Suns": "Western", 
+"Portland Trail Blazers": "Western", 
+"Sacramento Kings": "Western", 
+"San Antonio Spurs": "Western", 
+"Utah Jazz": "Western", 
+
+"Seattle Expansion Team": "Expansion", 
+"Las Vegas Expansion Team": "Expansion",
+
+
+}
+
 df = pd.DataFrame(data)
+
+df["Conference"] = df["Team"].map(team_conferences)
 
 df["Win Percentage"] = df.apply(
     lambda row: round(row["Wins"] / (row["Wins"] + row["Losses"]), 3)
@@ -128,10 +196,80 @@ df["Win Percentage"] = df.apply(
     axis=1
 )
 
-st.subheader("Team Statistics")
-st.dataframe(df)
+st.sidebar.header("Dashboard Filters")
 
-selected_team = st.selectbox("Select a team", df["Team"])
+selected_team = st.sidebar.selectbox(
+    "Select a team",
+    df["Team"]
+)
+
+selected_metric = st.sidebar.selectbox(
+    "Select a metric",
+    ["Wins", "Losses", "Points Per Game", "Rebounds Per Game", "Assists Per Game", "Win Percentage"]
+)
+
+selected_conference = st.sidebar.selectbox(
+    "Select conference", 
+    ["All", "Eastern", "Western", "Expansion"]
+)
+
+filtered_df = df.copy()
+
+if selected_conference != "All": 
+    filtered_df = filtered_df[filtered_df["Conference"] == selected_conference]
+
+selected_historical_teams = st.sidebar.multiselect(
+    "Historical teams",
+    list(historical_df.columns[1:]),
+    default=["Boston Celtics", "Miami Heat", "Denver Nuggets"]
+)
+
+selected_seasons = st.sidebar.multiselect(
+    "Historical seasons",
+    historical_df["Season"],
+    default=list(historical_df["Season"])
+)
+
+st.subheader("Team Statistics")
+
+def highlight_conference(row): 
+    if row["Conference"] == "Eastern": 
+        return ["background-color: rgba(0, 122, 51, 0.18)"] * len(row)
+    elif row["Conference"] == "Western":
+        return ["background-color: rgba(29, 66, 138, 0.18)"] * len(row)
+    elif row["Conference"] == "Expansion": 
+        return ["background-color: rgba(180, 180, 180, 0.18)"] * len(row)  
+    return [""] * len(row)
+
+
+
+st.dataframe(filtered_df)
+
+st.subheader("Standings")
+
+if selected_conference == "All":
+    standings_title = "Overall NBA Standings"
+elif selected_conference == "Expansion": 
+    standings_title = "Expansion Team Standings"
+else: 
+    standings_title = f"{selected_conference} Conference Standings" 
+
+st.markdown(f'### {standings_title}')
+
+standings_df = filtered_df.sort_values(
+    by = ["Win Percentage", "Wins"], 
+    ascending = False 
+).reset_index(drop=True)
+
+standings_df.index += 1
+standings_df.index.name = "Rank"
+
+styled_standings = standings_df[
+    ["Team", "Conference", "Wins", "Losses", "Win Percentage"]
+].style.apply(highlight_conference, axis=1)
+
+st.dataframe(styled_standings)
+
 
 team_data = df[df["Team"] == selected_team].iloc[0]
 
@@ -150,7 +288,7 @@ col4.metric("Win Percentage", team_data["Win Percentage"])
 st.subheader("Win Percentage by Team")
 
 fig_win_pct = px.bar(
-    df.sort_values(by="Win Percentage", ascending=False),
+    filtered_df.sort_values(by="Win Percentage", ascending=False),
     x="Team",
     y="Win Percentage",
     color="Team",
@@ -171,8 +309,8 @@ st.plotly_chart(fig_win_pct, use_container_width=True)
 
 st.subheader("Points Per Game by Team")
 
-fig_ppg = px.bar(
-    df.sort_values(by="Points Per Game", ascending=False),
+fig_ppg = px.bar( 
+    filtered_df.sort_values(by="Win Percentage", ascending=False),
     x="Team", 
     y="Points Per Game", 
     color="Team",
@@ -195,7 +333,7 @@ st.plotly_chart(fig_ppg, use_container_width=True)
 st.subheader("Wins by Team")
 
 fig_wins = px.bar(
-    df.sort_values(by="Wins", ascending=False),
+    filtered_df.sort_values(by="Wins", ascending=False),
     x="Team",
     y="Wins",
     color="Team",
@@ -212,22 +350,41 @@ fig_wins.update_layout(
     
 )
 
-
 st.plotly_chart(fig_wins, use_container_width=True)
+
+st.subheader(f"{selected_metric} by Team")
+
+fig_selected_metric = px.bar(
+    filtered_df.sort_values(by=selected_metric, ascending=False),
+    x="Team",
+    y=selected_metric,
+    color="Team",
+    color_discrete_map=team_colors,
+    hover_data=["Wins", "Losses", "Points Per Game", "Win Percentage"],
+    title=f"NBA Team {selected_metric}"
+)
+
+fig_selected_metric.update_layout(
+    showlegend=False,
+    template="plotly_dark",
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font=dict(color="white")
+)
+
+st.plotly_chart(fig_selected_metric, use_container_width=True)
 
 st.subheader("Historical Season Wins Comparison")
 
-historical_teams = st.multiselect(
-    "Select teams to compare historically",
-    ["Boston Celtics", "Miami Heat", "Denver Nuggets", "Los Angeles Lakers", "Golden State Warriors"],
-    default=["Boston Celtics", "Miami Heat"]
-)
+filtered_historical_df = historical_df[
+    historical_df["Season"].isin(selected_seasons)
+]
 
-if historical_teams:
+if selected_historical_teams:
     fig_history = px.line(
-        historical_df,
+        filtered_historical_df,
         x="Season",
-        y=historical_teams,
+        y=selected_historical_teams,
         markers=True,
         title="Historical Wins by Season"
     )
