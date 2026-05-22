@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 
 team_logos = {
     "Miami Heat": "assets/logos/heat.png",
@@ -32,6 +33,19 @@ team_logos = {
     "Toronto Raptors": "assets/logos/raptors.png",
     "Utah Jazz": "assets/logos/jazz.png",
     "Washington Wizards": "assets/logos/wizards.png",
+}
+
+team_colors = {
+    "Boston Celtics": "#007A33",
+    "Miami Heat": "#98002E",
+    "Golden State Warriors": "#1D428A",
+    "Los Angeles Lakers": "#552583",
+    "Chicago Bulls": "#CE1141",
+    "Phoenix Suns": "#1D1160",
+    "Milwaukee Bucks": "#00471B",
+    "Dallas Mavericks": "#00538C",
+    "Denver Nuggets": "#0E2240",
+    "New York Knicks": "#F58426",
 }
 
 
@@ -123,10 +137,40 @@ col3.metric("Points Per Game", team_data["Points Per Game"])
 col4.metric("Win Percentage", team_data["Win Percentage"])
 
 st.subheader("Win Percentage by Team")
-st.bar_chart(df.set_index("Team")["Win Percentage"])
+
+fig_win_pct = px.bar(
+    df, 
+    x="Team",
+    y="Win Percentage",
+    color="Team",
+    color_discrete_map=team_colors,
+    title="NBA Team Win Percentage"
+)
+
+st.plotly_chart(fig_win_pct, use_container_width=True)
 
 st.subheader("Points Per Game by Team")
-st.bar_chart(df.set_index("Team")["Points Per Game"])
+
+fig_ppg = px.bar(
+    df,
+    x="Team", 
+    y="Points Per Game", 
+    color="Team",
+    color_discrete_map=team_colors,
+    title="NBA Team Points Per Game"
+)
+
+st.plotly_chart(fig_ppg, use_container_width=True)
 
 st.subheader("Wins by Team")
-st.bar_chart(df.set_index("Team")["Wins"])
+
+fig_wins = px.bar(
+    df, 
+    x="Team",
+    y="Wins",
+    color="Team",
+    color_discrete_map=team_colors,
+    title="NBA Team Wins"
+)
+
+st.plotly_chart(fig_wins, use_container_width=True)
