@@ -109,6 +109,17 @@ data = {
     ],
 }
 
+historical_data = {
+    "Season": ["2021-22", "2022-23", "2023-24", "2024-25"],
+    "Boston Celtics": [51, 57, 64, 61],
+    "Miami Heat": [53, 44, 46, 37], 
+    "Denver Nuggets": [48, 53, 57, 50], 
+    "Los Angeles Lakers": [33, 43, 47, 50], 
+    "Golden State Warriors": [53, 44, 46, 48],
+
+}
+historical_df = pd.DataFrame(historical_data)
+
 df = pd.DataFrame(data)
 
 df["Win Percentage"] = df.apply(
@@ -139,12 +150,21 @@ col4.metric("Win Percentage", team_data["Win Percentage"])
 st.subheader("Win Percentage by Team")
 
 fig_win_pct = px.bar(
-    df, 
+    df.sort_values(by="Win Percentage", ascending=False),
     x="Team",
     y="Win Percentage",
     color="Team",
     color_discrete_map=team_colors,
+    hover_data=["Wins", "Losses", "Points Per Game"],
     title="NBA Team Win Percentage"
+)
+fig_win_pct.update_layout(
+    showlegend=False,
+    template="plotly_dark",
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font=dict(color="white")
+    
 )
 
 st.plotly_chart(fig_win_pct, use_container_width=True)
@@ -152,25 +172,71 @@ st.plotly_chart(fig_win_pct, use_container_width=True)
 st.subheader("Points Per Game by Team")
 
 fig_ppg = px.bar(
-    df,
+    df.sort_values(by="Points Per Game", ascending=False),
     x="Team", 
     y="Points Per Game", 
     color="Team",
     color_discrete_map=team_colors,
+    hover_data=["Wins", "Losses", "Win Percentage"],
     title="NBA Team Points Per Game"
 )
+fig_ppg.update_layout(
+    showlegend=False,
+    template="plotly_dark",
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font=dict(color="white")
+    
+)
+
 
 st.plotly_chart(fig_ppg, use_container_width=True)
 
 st.subheader("Wins by Team")
 
 fig_wins = px.bar(
-    df, 
+    df.sort_values(by="Wins", ascending=False),
     x="Team",
     y="Wins",
     color="Team",
     color_discrete_map=team_colors,
+    hover_data=["Losses", "Win Percentage", "Points Per Game"],
     title="NBA Team Wins"
 )
+fig_wins.update_layout(
+    showlegend=False,
+    template="plotly_dark",
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font=dict(color="white")
+    
+)
+
 
 st.plotly_chart(fig_wins, use_container_width=True)
+
+st.subheader("Historical Season Wins Comparison")
+
+historical_teams = st.multiselect(
+    "Select teams to compare historically",
+    ["Boston Celtics", "Miami Heat", "Denver Nuggets", "Los Angeles Lakers", "Golden State Warriors"],
+    default=["Boston Celtics", "Miami Heat"]
+)
+
+if historical_teams:
+    fig_history = px.line(
+        historical_df,
+        x="Season",
+        y=historical_teams,
+        markers=True,
+        title="Historical Wins by Season"
+    )
+
+    fig_history.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="#0E1117",
+        plot_bgcolor="#0E1117",
+        font=dict(color="white")
+    )
+
+    st.plotly_chart(fig_history, use_container_width=True)
