@@ -338,6 +338,80 @@ col3.metric(
 )
 
 
+st.subheader("Team Comparison Mode")
+
+team_a, team_b = st.columns(2)
+
+with team_a: 
+    compare_team_1 = st.selectbox(
+        "Select first team",
+        df["Team"],
+        index=0
+    )
+
+with team_b: 
+    compare_team_2 = st.selectbox(
+        "Select second team", 
+        df["Team"],
+        index=1
+    )
+team_1_data = df[df["Team"] == compare_team_1].iloc[0]
+team_2_data = df[df["Team"] == compare_team_2].iloc[0]
+
+comparison_df = pd.DataFrame({
+    "Metric": [
+        "Wins",
+        "Losses",
+        "Points Per Game",
+        "Rebounds Per Game",
+        "Assists Per Game",
+        "Win Percentage"
+    ],
+    compare_team_1: [
+        team_1_data["Wins"],
+        team_1_data["Losses"],
+        team_1_data["Points Per Game"],
+        team_1_data["Rebounds Per Game"],
+        team_1_data["Assists Per Game"],
+        team_1_data["Win Percentage"]
+    ],
+    compare_team_2: [
+        team_2_data["Wins"],
+        team_2_data["Losses"],
+        team_2_data["Points Per Game"],
+        team_2_data["Rebounds Per Game"],
+        team_2_data["Assists Per Game"],
+        team_2_data["Win Percentage"]
+    ]
+})
+
+st.dataframe(comparison_df)
+
+comparison_long_df = comparison_df.melt(
+    id_vars="Metric",
+    var_name="Team",
+    value_name="Value"
+)
+
+fig_comparison = px.bar(
+    comparison_long_df,
+    x="Metric",
+    y="Value",
+    color="Team",
+    barmode="group",
+    color_discrete_map=team_colors,
+    title=f"{compare_team_1} vs {compare_team_2}"
+)
+
+fig_comparison.update_layout(
+    template="plotly_dark",
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font=dict(color="white")
+)
+
+st.plotly_chart(fig_comparison, use_container_width=True)    
+
 st.subheader(f"{selected_team} Summary")
 
 if selected_team in team_logos:
