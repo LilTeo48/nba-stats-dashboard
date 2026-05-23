@@ -297,8 +297,21 @@ standings_df = filtered_df.sort_values(
 standings_df.index += 1
 standings_df.index.name = "Rank"
 
+def get_seed_status(rank):
+    if rank <= 6:
+        return "🟢 Playoffs"
+    elif rank <= 10:
+        return "🟡 Play-In"
+    else:
+        return "🔴 Lottery"
+
+standings_df["Seed Status"] = [
+    get_seed_status(rank)
+    for rank in standings_df.index
+]               
+
 styled_standings = standings_df[
-    ["Team", "Conference", "Wins", "Losses", "Win Percentage"]
+    ["Team", "Conference", "Wins", "Losses", "Win Percentage", "Seed Status"]
 ].style.apply(highlight_conference, axis=1)
 
 st.dataframe(styled_standings)
