@@ -263,6 +263,34 @@ selected_seasons = st.sidebar.multiselect(
     default=list(historical_df["Season"])
 )
 
+overview_tab, comparison_tab, historical_tab = st.tabs(
+    ["Overview", "Team Comparison", "Historical Trends"]
+)
+
+with overview_tab:
+    st.subheader("Team Statistics")
+    st.dataframe(filtered_df)
+
+    st.subheader("Standings")
+    # standings code
+    # top teams code
+    # selected team summary code
+    # win percentage chart
+    # PPG chart
+    # wins chart
+    # selected metric chart
+
+with comparison_tab:
+    st.subheader("Team Comparison Mode")
+    # team comparison dropdowns
+    # comparison table
+    # comparison chart
+
+with historical_tab:
+    st.subheader("Historical Season Wins Comparison")
+    # filtered_historical_df code
+    # historical line chart
+
 st.subheader("Team Statistics")
 
 def highlight_conference(row): 
