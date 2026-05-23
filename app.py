@@ -36,16 +36,39 @@ team_logos = {
 }
 
 team_colors = {
+    "Atlanta Hawks": "#E03A3E",
     "Boston Celtics": "#007A33",
-    "Miami Heat": "#98002E",
-    "Golden State Warriors": "#1D428A",
-    "Los Angeles Lakers": "#552583",
+    "Brooklyn Nets": "#000000",
+    "Charlotte Hornets": "#1D1160",
     "Chicago Bulls": "#CE1141",
-    "Phoenix Suns": "#1D1160",
-    "Milwaukee Bucks": "#00471B",
+    "Cleveland Cavaliers": "#860038",
     "Dallas Mavericks": "#00538C",
     "Denver Nuggets": "#0E2240",
+    "Detroit Pistons": "#C8102E",
+    "Golden State Warriors": "#1D428A",
+    "Houston Rockets": "#CE1141",
+    "Indiana Pacers": "#FDBB30",
+    "Los Angeles Clippers": "#C8102E",
+    "Los Angeles Lakers": "#552583",
+    "Memphis Grizzlies": "#5D76A9",
+    "Miami Heat": "#98002E",
+    "Milwaukee Bucks": "#00471B",
+    "Minnesota Timberwolves": "#0C2340",
+    "New Orleans Pelicans": "#0C2340",
     "New York Knicks": "#F58426",
+    "Oklahoma City Thunder": "#007AC1",
+    "Orlando Magic": "#0077C0",
+    "Philadelphia 76ers": "#006BB6",
+    "Phoenix Suns": "#1D1160",
+    "Portland Trail Blazers": "#E03A3E",
+    "Sacramento Kings": "#5A2D81",
+    "San Antonio Spurs": "#C4CED4",
+    "Toronto Raptors": "#CE1141",
+    "Utah Jazz": "#002B5C",
+    "Washington Wizards": "#002B5C",
+    "Seattle Expansion Team": "#2E8B57",
+    "Las Vegas Expansion Team": "#B8860B",
+    
 }
 
 
@@ -198,10 +221,20 @@ df["Win Percentage"] = df.apply(
 
 st.sidebar.header("Dashboard Filters")
 
+team_search = st.sidebar.text_input("Search for a team")
+
+filtered_teams = df[
+    df["Team"].str.contains(team_search, case=False)
+]["Team"].tolist()
+
+if not filtered_teams:
+    filtered_teams = df["Team"].tolist()
+
 selected_team = st.sidebar.selectbox(
     "Select a team",
-    df["Team"]
+    filtered_teams
 )
+
 
 selected_metric = st.sidebar.selectbox(
     "Select a metric",
@@ -273,6 +306,38 @@ st.dataframe(styled_standings)
 
 team_data = df[df["Team"] == selected_team].iloc[0]
 
+st.subheader("Top Teams")
+
+top_team = standings_df.iloc[0]
+
+best_offense = filtered_df.loc[
+    filtered_df["Points Per Game"].idxmax()
+]
+
+best_assists = filtered_df.loc[
+    filtered_df["Assists Per Game"].idxmax()
+]
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric(
+    "Best Record",
+    top_team["Team"], 
+    f'{top_team["Wins"]}-{top_team["Losses"]}'
+)
+
+col2.metric(
+    "Highest Scoring Team", 
+    best_offense["Team"],
+    f'{best_offense["Points Per Game"]} PPG'
+)
+col3.metric(
+    "Best Passing Team",
+    best_assists["Team"],
+    f'{best_assists["Assists Per Game"]} APG'
+)
+
+
 st.subheader(f"{selected_team} Summary")
 
 if selected_team in team_logos:
@@ -310,7 +375,7 @@ st.plotly_chart(fig_win_pct, use_container_width=True)
 st.subheader("Points Per Game by Team")
 
 fig_ppg = px.bar( 
-    filtered_df.sort_values(by="Win Percentage", ascending=False),
+    filtered_df.sort_values(by="Points Per Game", ascending=False),
     x="Team", 
     y="Points Per Game", 
     color="Team",
