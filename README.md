@@ -1,63 +1,59 @@
 # NBA Stats Dashboard
 
-An interactive NBA analytics dashboard built with Python, Streamlit, Pandas, and Plotly for visualizing team performance, standings, and historical season comparisons.
+Interactive NBA analytics dashboard built with Python, Streamlit, Pandas, and Plotly.
+
+## Live Demo
+
+[View Live App](https://nba-stats-dashboard-5wdnaujrfiarfwcvpfw8ul.streamlit.app)
 
 ## Features
 
-* Interactive NBA team analytics dashboard
-* Conference filtering (Eastern, Western, Expansion)
-* Dynamic standings table with rankings
-* Conference-colored standings visualization
-* Historical season comparison charts
-* Team performance metrics:
-
-  * Wins
-  * Losses
-  * Points Per Game
-  * Rebounds Per Game
-  * Assists Per Game
-  * Win Percentage
-* Team summary cards with logos
-* Interactive sidebar filters
-* Plotly visualizations with dark mode styling
+- NBA team statistics dashboard
+- Conference standings with playoff seeding indicators
+- Team comparison mode
+- Historical trend analysis
+- Advanced analytics visualizations
+- Interactive Plotly charts
+- Streamlit dark mode UI
+- Team logo integration
+- Cached data loading for performance optimization
 
 ## Technologies Used
 
-* Python
-* Streamlit
-* Pandas
-* Plotly Express
+- Python
+- Streamlit
+- Pandas
+- Plotly Express
+- Git/GitHub
 
-## Dashboard Functionality
+## Dashboard Sections
 
-### Team Analytics
+### Overview
+- Team statistics
+- Standings
+- Team summaries
+- Interactive metrics charts
 
-Users can:
+### Team Comparison
+- Compare two NBA teams side-by-side
+- Statistical breakdown tables
+- Interactive grouped bar charts
 
-* Select teams
-* Compare metrics
-* Analyze standings
-* Filter by conference
+### Historical Trends
+- Multi-season wins comparison
+- Interactive historical line charts
 
-### Historical Comparisons
-
-Historical win totals across multiple seasons can be compared dynamically using interactive line charts.
-
-### Conference Standings
-
-The dashboard supports:
-
-* Eastern Conference standings
-* Western Conference standings
-* Expansion team standings
-* Overall NBA standings
+### Advanced Analytics
+- Offensive rating metrics
+- Assist efficiency analysis
+- Advanced scatter plot visualizations
 
 ## Installation
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/nba-stats-dashboard.git
+git clone https://github.com/LilTeo48/nba-stats-dashboard.git
 cd nba-stats-dashboard
 ```
 
@@ -75,17 +71,12 @@ streamlit run app.py
 
 ## Future Improvements
 
-* Real-time NBA API integration
-* Advanced analytics
-* Player statistics
-* Playoff seeding visuals
-* Team-vs-team comparison mode
-* Downloadable reports
-* Streamlit Cloud deployment
-
-## Screenshots
-
-(Add dashboard screenshots here)
+- Live NBA API integration
+- Player analytics
+- Shot charts
+- Team filtering enhancements
+- Mobile responsiveness improvements
+- Machine learning win predictions
 
 ## Author
 
